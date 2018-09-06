@@ -7,6 +7,7 @@
 static unsigned int num_posNodes = 0;
 static unsigned int num_texNodes = 0;
 static unsigned int num_norNodes = 0;
+static unsigned int num_indexNodes = 0;
 
 typedef struct PositionNode {
 	vec3 pos;
@@ -22,5 +23,10 @@ typedef struct NormalNode {
 	vec3 pos;
 	struct NormalNode *nextNode;
 } nNode;
+
+typedef struct IndexNode {
+	int p1, p2, p3;
+	struct IndexNode *nextNode;
+} iNode;
 
 #endif
