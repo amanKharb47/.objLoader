@@ -8,7 +8,7 @@
 
 #include "LinkedList.h"
 
-void load(const char* fileName) {
+void load(const char* fileName, float* dataBuffer) {
 	FILE *file = fopen(fileName, "r");
 	char dataType[20];
 	float *positionArray = NULL;
@@ -148,24 +148,33 @@ void load(const char* fileName) {
 
 	// TODO now deal with the 'f' section of the file, this is going to be the real work
 	if (!textureAvailable) {
+		finalBuffer = (float*)malloc(sizeof(float) * 3 * num_posNodes * 2 * num_norNodes);
+
 		while (1) {
 			int result = fscanf(file, "%s ", &dataType);
 			if (result == EOF)
 				break;
 
-			int position1, position2, position3;
+			int position1;
 			int normal1;
 
 			if (strcmp(dataType, "f") == 0) {
-				fscanf(file, "%d//%d %d//%*d %d//%*d", &position1, &normal1, &position2, &position3);
-				printf("Indexes: %d %d %d, Normal: %d\n", position1, position2, position3, normal1);
+				fscanf(file, "%d//%d %*d//%*d %*d//%*d", &position1, &normal1);
+				//printf("Indexes: %d %d %d, Normals: %d %d %d\n", position1, position2, position3, normal1, normal2, normal3);
+				finalBuffer[5 * (position1 - 1)] = positionArray[position1 - 1];
+				finalBuffer[5 * (position1 - 1) + 1] = positionArray[position1];
+				finalBuffer[5 * (position1 - 1) + 2] = positionArray[position1 + 1];
+				finalBuffer[5 * (position1 - 1) + 3] = normalArray[normal1 - 1];
+				finalBuffer[5 * (position1 - 1) + 4] = normalArray[normal1];
 			}
 		}
 	}
+	dataBuffer = finalBuffer;
 }
 
 int main() {
-	load("untitled.obj");
+	float *data = NULL;
+	load("monkey.obj", data);
 	getchar();
 	return 0;
 }
