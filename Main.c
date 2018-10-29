@@ -128,7 +128,7 @@ void load(const char* fileName, float* dataBuffer) {
 				for (tNode *reader = headT; reader->nextNode != NULL; reader = reader->nextNode) {
 					textureArray[i] = reader->pos.x;
 					textureArray[i + 1] = reader->pos.y;
-					printf("Texture %d: %f %f\n", i / 2, textureArray[i], textureArray[i + 1], textureArray[i + 2]);
+					printf("Texture %d: %f %f\n", i / 2, textureArray[i], textureArray[i + 1]);
 					i += 2;
 				}
 				textureAvailable = 1;
@@ -148,7 +148,7 @@ void load(const char* fileName, float* dataBuffer) {
 
 	// TODO now deal with the 'f' section of the file, this is going to be the real work
 	if (!textureAvailable) {
-		finalBuffer = (float*)malloc(sizeof(float) * 3 * num_posNodes * 2 * num_norNodes);
+		finalBuffer = (float*)malloc(sizeof(float) * 3 * num_posNodes * 3 * num_norNodes);
 
 		while (1) {
 			int result = fscanf(file, "%s ", &dataType);
