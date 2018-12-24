@@ -4,10 +4,10 @@
 #ifndef LINKED_LIST_H
 #define LINKED_LIST_H
 
-static unsigned int num_posNodes = 0;
-static unsigned int num_texNodes = 0;
-static unsigned int num_norNodes = 0;
-static unsigned int num_indexNodes = 0;
+static int num_posNodes = 0;
+static int num_texNodes = 0;
+static int num_norNodes = 0;
+static int num_indexNodes = 0;
 
 typedef struct PositionNode {
 	vec3 pos;

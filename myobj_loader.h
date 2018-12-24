@@ -1,21 +1,52 @@
-/*			This small wavefront.obj file parser was created as part of a college project.
-			This is not a professional software and comes as is. The creator shall not be
-			liable for any harm caused by the use of the program.
-			This program is made for personal use and does not cover all possible kinds of
-			wavefront.obj file eg. ones with multiple meshes. This is a learning project but
-			feel free to improve it or use in your small projects.
-
-			I have also created a final header(myobj_loader.h) file that you can just include
-			in your project and use the program from there.
+/*
+This is the final header file for the wavefront.obj loader.
+Read the desciption at the beginning of the Main.c file.
+Simply include it in your project and use the myobj_load() function.
 */
 
+#ifndef MYOBJ_LOADER_H
+#define MYOBJ_LOADER_H
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
-#include "LinkedList.h"
+typedef struct {
+	float x;
+	float y;
+} vec2;
+
+typedef struct {
+	float x;
+	float y;
+	float z;
+} vec3;
+
+
+static int num_posNodes = 0;
+static int num_texNodes = 0;
+static int num_norNodes = 0;
+static int num_indexNodes = 0;
+
+typedef struct PositionNode {
+	vec3 pos;
+	struct PositionNode *nextNode;
+} pNode;
+
+typedef struct TextureNode {
+	vec2 pos;
+	struct TextureNode *nextNode;
+} tNode;
+
+typedef struct NormalNode {
+	vec3 pos;
+	struct NormalNode *nextNode;
+} nNode;
+
+typedef struct IndexNode {
+	int p1, p2, p3;
+	struct IndexNode *nextNode;
+} iNode;
 
 //Main loading function
 float* myobj_load(const char* fileName, int* faces) {
@@ -123,7 +154,7 @@ float* myobj_load(const char* fileName, int* faces) {
 			printf("Positions: %d\nTextures: %d\nNormals: %d\n", num_posNodes, num_texNodes, num_norNodes);
 #endif
 			positionArray = (float *)malloc(sizeof(float) * 3 * num_posNodes);
-			if(headT != currentNodeT)
+			if (headT != currentNodeT)
 				textureArray = (float *)malloc(sizeof(float) * 2 * num_texNodes);
 			normalArray = (float *)malloc(sizeof(float) * 3 * num_norNodes);
 
@@ -159,7 +190,7 @@ float* myobj_load(const char* fileName, int* faces) {
 				normalArray[i + 1] = reader->pos.y;
 				normalArray[i + 2] = reader->pos.z;
 #ifdef DEBUG_INFO
-				printf("Normal %d: %f %f %f\n", i/3, normalArray[i], normalArray[i + 1], normalArray[i + 2]);
+				printf("Normal %d: %f %f %f\n", i / 3, normalArray[i], normalArray[i + 1], normalArray[i + 2]);
 #endif
 				i += 3;
 			}
@@ -195,20 +226,20 @@ float* myobj_load(const char* fileName, int* faces) {
 #ifdef DEBUG_INFO
 				printf("%d//%d %d//%d %d//%d\n", positions[0], normals[0], positions[1], normals[1], positions[2], normals[2]);
 #endif
-				finalBuffer[f_count]	 = positionArray[3 * (positions[0] - 1)];
+				finalBuffer[f_count] = positionArray[3 * (positions[0] - 1)];
 				finalBuffer[f_count + 1] = positionArray[3 * (positions[0] - 1) + 1];
 				finalBuffer[f_count + 2] = positionArray[3 * (positions[0] - 1) + 2];
 				finalBuffer[f_count + 3] = normalArray[3 * (normals[0] - 1)];
 				finalBuffer[f_count + 4] = normalArray[3 * (normals[0] - 1) + 1];
 				finalBuffer[f_count + 5] = normalArray[3 * (normals[0] - 1) + 2];
-						   	
+
 				finalBuffer[f_count + 6] = positionArray[3 * (positions[1] - 1)];
 				finalBuffer[f_count + 7] = positionArray[3 * (positions[1] - 1) + 1];
 				finalBuffer[f_count + 8] = positionArray[3 * (positions[1] - 1) + 2];
-				finalBuffer[f_count + 9] = normalArray[3 *  (normals[1] - 1)];
+				finalBuffer[f_count + 9] = normalArray[3 * (normals[1] - 1)];
 				finalBuffer[f_count + 10] = normalArray[3 * (normals[1] - 1) + 1];
 				finalBuffer[f_count + 11] = normalArray[3 * (normals[1] - 1) + 2];
-						   	
+
 				finalBuffer[f_count + 12] = positionArray[3 * (positions[2] - 1)];
 				finalBuffer[f_count + 13] = positionArray[3 * (positions[2] - 1) + 1];
 				finalBuffer[f_count + 14] = positionArray[3 * (positions[2] - 1) + 2];
@@ -225,19 +256,4 @@ float* myobj_load(const char* fileName, int* faces) {
 	return finalBuffer;
 }
 
-int main() {
-	float *data = NULL;
-	int faces;
-	clock_t start = clock();
-	data = load("untitled.obj", &faces);
-	clock_t end = clock();
-
-	printf("Time taken: %f\n", (float)(end - start) / CLOCKS_PER_SEC);
-
-	for (int i = 0; i < faces; i++) {
-		printf("Positions: %.4f, %.4f, %.4f\n", data[6 * i], data[6 * i + 1], data[6 * i + 2]);
-		printf("Normals: %.4f, %.4f, %.4f\n\n", data[6 * i + 3], data[6 * i + 4], data[6 * i + 5]);
-	}
-	getchar();
-	return 0;
-}
+#endif MYOBJ_LOADER_H
